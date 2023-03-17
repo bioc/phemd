@@ -1,0 +1,81 @@
+GDM                     Accessor function for EMD ground distance
+                        matrix
+Phemd                   Phemd class
+Phemd-methods           Setter function for protein / gene markers
+aggregateSamples        Aggregate expression data from all samples
+all_expn_data           Single-cell RNA-seq expression data for
+                        melanoma samples
+all_genes               All genes included in (subsampled) melanoma
+                        single-cell RNA-seq expression data
+assignCellClusterNearestNode
+                        Assign cells to a reference cell subtype
+batchIDs                Accessor function for batch ID for each sample
+bindSeuratObj           Attach 'Seurat' object to 'Phemd' object
+celltypeFreqs           Accessor function for cell subtype distribution
+                        for each sample
+clusterIndividualSamples
+                        Computes cell subtype abundances for each
+                        sample
+compareSamples          Computes EMD distance matrix representing
+                        pairwise dissimilarity between samples
+createDataObj           Create 'Phemd' object
+drawColnames45          Rotates heatmap marker labels 45 degrees
+embedCells              Generate cell-state embedding
+gaussianffLocal         Models expression data using generalized linear
+                        model with Gaussian error
+generateGDM             Computes ground distance matrix based on cell
+                        embedding
+getArithmeticCentroids
+                        Get arithmetic centroids (coordinates)
+getCellYield            Gets cell yield of each sample as a table
+getSampleCelltypeFreqs
+                        Returns cell subtype distribution for each
+                        sample as a table
+getSampleHistsByCluster
+                        Gets cell subtype frequency histograms for each
+                        sample by cluster ID
+getSampleSizes          Retrieve single-cell sample sizes
+groupSamples            Performs community detection on sample-sample
+                        distance matrix to identify groups of similar
+                        samples
+heatmap_genes           Genes to be used when plotting heatmap for
+                        melanoma single-cell RNA-seq expression data
+identifyCentroids       Identify cluster centroids (cell names)
+monocleInfo             Accessor function for stored Monocle object
+orderCellsMonocle       Compute Monocle2 cell state and pseudotime
+                        assignments
+phateInfo               Accessor function for stored phate object
+plotCellYield           Plot cell yield of each sample as bar plot
+plotEmbeddings          Plots Monocle2 cell embedding plots
+plotGroupedSamplesDmap
+                        Plot diffusion map embedding of samples based
+                        on distance matrix
+plotHeatmaps            Plot heatmap of cell subtypes
+plotSummaryHistograms   Plots cell subtype frequency histograms
+                        summarizing each group of samples
+pooledCells             Accessor function for aggregated cells used for
+                        cell subtype definition
+printClusterAssignments
+                        Writes samples to file based on community
+                        detection group assignments
+rawExpn                 Accessor function for stored multi-sample raw
+                        expression data
+removeTinySamples       Remove samples with too few cells
+retrieveRefClusters     Retrieve reference cell clusters
+sNames                  Accessor function for identifiers of all
+                        single-cell samples in experiment
+selectFeatures          Perform feature selection on aggregated data
+selectMarkers           Accessor function for gene/protein markers
+                        measured in experiment
+selected_genes          Genes to be used when performing clustering and
+                        trajectory analyses on melanoma single-cell
+                        RNA-seq expression data
+seuratInfo              Accessor function for stored Seurat object
+                        within Phemd object
+snames_data             Sample names for melanoma single-cell RNA-seq
+                        expression data
+subsampledBool          Accessor function for whether or not cells were
+                        subsampled when aggregated for cell subtype
+                        analysis
+subsampledIdx           Accessor function for aggregated cells used for
+                        cell subtype definition

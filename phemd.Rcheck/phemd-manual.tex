@@ -1,0 +1,1980 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `phemd'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {phemd: Phenotypic EMD for comparison of single-cell samples}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Phenotypic EMD for comparison of single-cell samples}
+\item[Version]\AsIs{1.15.1}
+\item[Author]\AsIs{William S Chen}
+\item[Maintainer]\AsIs{William S Chen }\email{wil.yum.chen@gmail.com}\AsIs{}
+\item[Description]\AsIs{Package for comparing and generating a low-dimensional embedding
+of multiple single-cell samples.}
+\item[License]\AsIs{GPL-2}
+\item[Encoding]\AsIs{UTF-8}
+\item[LazyData]\AsIs{true}
+\item[Depends]\AsIs{R (>= 3.5), monocle, Seurat}
+\item[Imports]\AsIs{SingleCellExperiment, RColorBrewer, igraph, transport, pracma,
+cluster, Rtsne, destiny, RANN, ggplot2, maptree, pheatmap,
+scatterplot3d, VGAM, methods, grDevices, graphics, stats,
+utils, cowplot, S4Vectors, BiocGenerics, SummarizedExperiment,
+Biobase, phateR, reticulate}
+\item[Config/reticulate]\AsIs{list( packages = list( list(package = ``phate'') ) )}
+\item[Suggests]\AsIs{knitr}
+\item[VignetteBuilder]\AsIs{knitr}
+\item[biocViews]\AsIs{Clustering, ComparativeGenomics, Proteomics,
+Transcriptomics, Sequencing, DimensionReduction, SingleCell,
+DataRepresentation, Visualization, MultipleComparison}
+\item[RoxygenNote]\AsIs{7.0.2}
+\item[PackageStatus]\AsIs{Deprecated}
+\item[NeedsCompilation]\AsIs{no}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{aggregateSamples}{Aggregate expression data from all samples}{aggregateSamples}
+%
+\begin{Description}\relax
+Takes initial Phemd object and returns object with additional data frame in slot @data\_aggregate containing cells aggregated from all samples (to be used for further analyses e.g. Monocle 2 trajectory building / pseudotime mapping / cell clustering)
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+aggregateSamples(obj, max_cells = 12000)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing raw expression data and associated metadata
+
+\item[\code{max\_cells}] Maximum number of cells across all samples to be included in final matrix on which Monocle 2 will be run
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Subsamples cells as necessary based on \code{max\_cells}. If subsampling is performed, an equal number of cells are subsampled from each sample
+\end{Details}
+%
+\begin{Value}
+Same as input 'Phemd' object with additional slot 'data\_aggregate' containing aggregated expression data (num\_markers x num\_cells)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{all\_expn\_data}{Single-cell RNA-seq expression data for melanoma samples}{all.Rul.expn.Rul.data}
+\keyword{datasets}{all\_expn\_data}
+%
+\begin{Description}\relax
+This dataset contains normalized single-cell RNA-seq expression data for 19 melanoma samples (immune cells).
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+data(all_expn_data)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+A list of length 19 with each element representing a distinct sample. Each list element (sample) is a matrix with dimension num\_genes x num\_cells.
+\end{Format}
+%
+\begin{Source}\relax
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+\end{Source}
+%
+\begin{References}\relax
+Tirosh, I. et al. Dissecting the multicellular ecosystem of metastatic melanoma by single-cell RNA-seq. Science 352, 189–196 (2016)
+\end{References}
+\inputencoding{utf8}
+\HeaderA{all\_genes}{All genes included in (subsampled) melanoma single-cell RNA-seq expression data}{all.Rul.genes}
+\keyword{datasets}{all\_genes}
+%
+\begin{Description}\relax
+This object contains 100 genes measured in melanoma single-cell RNA-seq expression data.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+  data(all_genes)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+Vector of length 100 representing row names of each matrix in melanoma expression dataset
+\end{Format}
+%
+\begin{Source}\relax
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+\end{Source}
+%
+\begin{References}\relax
+Tirosh, I. et al. Dissecting the multicellular ecosystem of metastatic melanoma by single-cell RNA-seq. Science 352, 189–196 (2016)
+\end{References}
+\inputencoding{utf8}
+\HeaderA{assignCellClusterNearestNode}{Assign cells to a reference cell subtype}{assignCellClusterNearestNode}
+%
+\begin{Description}\relax
+Assigns each cell in \code{cur\_cells} to a cluster based on nearest cell in Monocle 2 tree
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+assignCellClusterNearestNode(
+  cur_cells,
+  ref_cells,
+  ref_cell_labels,
+  cell_model = c("monocle2", "seurat", "phate")
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{cur\_cells}] Matrix of cells to be assigned to clusters (Dim: \var{num\_cells} x \var{num\_markers})
+
+\item[\code{ref\_cells}] Matrix of cells used to build reference Monocle 2 tree (Dim: \var{num\_monocle\_cells} x \var{num\_markers})
+
+\item[\code{ref\_cell\_labels}] Vector of length \var{num\_monocle\_cells} containing Monocle 2 cell branch assignments
+
+\item[\code{cell\_model}] Either "monocle2", "seurat", or "phate" depending on method used to model cell state space
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not exported in namespace). Uses RANN package for fast knn search
+\end{Details}
+%
+\begin{Value}
+Vector of length \var{num\_cells} representing cluster assignments for each cell in \var{cur\_cells}
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+cur_cells_cluster_labels <- assignCellClusterNearestNode(cur_cells_expn_data,
+clustered_cells_expn_data, clustered_cells_cluster_labels, cell_model='monocle2')
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{batchIDs}{Accessor function for batch ID for each sample}{batchIDs}
+%
+\begin{Description}\relax
+Accessor function for batch ID for each sample
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+batchIDs(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Vector of length num\_samples representing the experiment (batch) in which the sample was profiled
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+batch_metadata <- batchIDs(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{bindSeuratObj}{Attach 'Seurat' object to 'Phemd' object}{bindSeuratObj}
+%
+\begin{Description}\relax
+Allows user to attach batch-normalized reference cell data from Seurat into 'Phemd' object containing raw expression data and metadata
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+bindSeuratObj(phemd_obj, seurat_obj, batch.colname = "plt")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{phemd\_obj}] Phemd object initialized using createDataObj
+
+\item[\code{seurat\_obj}] S4 'seurat' object containing batch-normalized reference cell data
+
+\item[\code{batch.colname}] Name of column in Seurat object that denotes batch ID
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+'Phemd' object containing with attached Seurat object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+my_seuratObj <- Seurat::FindVariableFeatures(object = my_seuratObj)
+my_seuratObj <- Seurat::ScaleData(object = my_seuratObj, do.scale=FALSE, do.center=FALSE)
+my_seuratObj <- Seurat::RunPCA(object = my_seuratObj, pc.genes = colnames(all_expn_data[[1]]), do.print = FALSE)
+my_seuratObj <- Seurat::FindNeighbors(my_seuratObj, reduction = "pca", dims.use = 1:10)
+my_seuratObj <- Seurat::FindClusters(my_seuratObj, resolution = 0.6, print.output = 0, save.SNN = TRUE)
+my_phemdObj <- bindSeuratObj(my_phemdObj, my_seuratObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{celltypeFreqs}{Accessor function for cell subtype distribution for each sample}{celltypeFreqs}
+%
+\begin{Description}\relax
+Accessor function for cell subtype distribution for each sample
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+celltypeFreqs(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Matrix representing cell subtype relative frequencies for each sample (num\_samples x num\_genes)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+celltype_weights <- celltypeFreqs(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{clusterIndividualSamples}{Computes cell subtype abundances for each sample}{clusterIndividualSamples}
+%
+\begin{Description}\relax
+Takes as input a Phemd object with all single-cell expression data of all single-cell samples in @data slot and cell-state embedding generated by embedCells. Returns updated object with cell subtype frequencies of each sample that may be retrieved by the 'celltypeFreqs' accessor function.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+clusterIndividualSamples(
+  obj,
+  verbose = FALSE,
+  cell_model = c("monocle2", "seurat", "phate")
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing single-cell expression data of all samples in @data slot and cell-state embedding object generated and stored using the embedCells function.
+
+\item[\code{verbose}] Boolean that determines whether progress (sequential processing of samples) should be printed. FALSE by default
+
+\item[\code{cell\_model}] Either "monocle2", "seurat", or "phate" depending on method used to model cell state space
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{embedCells} (and \code{orderCellsMonocle} if using the Monocle2 embedding technique) needs to be called before calling this function.
+\end{Details}
+%
+\begin{Value}
+'Phemd' object with cell subtype frequencies of each sample that can be retrieved using the 'celltypeFreqs' accessor function
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{compareSamples}{Computes EMD distance matrix representing pairwise dissimilarity between samples}{compareSamples}
+%
+\begin{Description}\relax
+Takes as input a Phemd object with cell subtype relative frequencies for each sample in @data\_cluster\_weights slot and ground distance matrix (representing cell subtype pairwise dissimilarity) in @emd\_dist\_mat slot. Returns distance matrix representing pairwise dissimilarity between samples
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+compareSamples(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing cell subtype relative frequencies for each sample in @data\_cluster\_weights slot and ground distance matrix (representing cell subtype dissimilarity) in @emd\_dist\_mat slot
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Requires 'transport' and 'pracma' packages
+\end{Details}
+%
+\begin{Value}
+Distance matrix of dimension num\_samples x num\_samples representing pairwise dissimilarity between samples
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{createDataObj}{Create 'Phemd' object}{createDataObj}
+%
+\begin{Description}\relax
+Wrapper function to create 'Phemd' object containing raw expression data and metadata
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+createDataObj(data, markers, snames, datatype = "list", valtype = "counts")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] List of length \var{num\_samples} containing expression data; each element is of size \var{num\_cells} x \var{num\_markers}. Alternately a SingleCellExperiment object.
+
+\item[\code{markers}] Vector containing marker names (i.e. column names of \code{all\_data})
+
+\item[\code{snames}] Vector containing sample names (i.e. names of samples contained in \code{all\_data})
+
+\item[\code{datatype}] Either "list" or "sce" (SingleCellExperiment with genes x cells)
+
+\item[\code{valtype}] Type of assay data (i.e. "counts", "normcounts", "logcounts", "tpm", "cpm") if datatype is "sce"
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Note that each element in list can have different number of rows (i.e. number of cells in each sample can vary).
+\end{Details}
+%
+\begin{Value}
+'Phemd' object containing raw multi-sample expression data and associated metadata
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{drawColnames45}{Rotates heatmap marker labels 45 degrees}{drawColnames45}
+%
+\begin{Description}\relax
+Overwrites default draw\_colnames in the pheatmap package
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+drawColnames45(coln, gaps, ...)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{coln}] Column names
+
+\item[\code{gaps}] Spacing of labels
+
+\item[\code{...}] Additional parameters to be passed to \code{gpar}
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+To be used with pheatmap plotting function; not to be called directly. Thanks to Josh O'Brien at http://stackoverflow.com/questions/15505607
+\end{Details}
+%
+\begin{Value}
+Formatted marker labels in heatmap
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+#Not to be called directly
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{embedCells}{Generate cell-state embedding}{embedCells}
+%
+\begin{Description}\relax
+Takes as input a Phemd object with aggregated data and returns updated object containing cell-state embedding
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+embedCells(
+  obj,
+  cell_model = c("monocle2", "seurat", "phate"),
+  data_model = "negbinomial_sz",
+  phate_ncluster = 8,
+  phate_cluster_seed = NULL,
+  ...
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing aggregated data
+
+\item[\code{cell\_model}] Method to use to generate cell-state embedding. Currently supports "phate" and "monocle2". If using the Seurat to model the cell-state space, please identify cell subtypes as outlined in the Seurat software package and then use the \code{bindSeuratObj} function.
+
+\item[\code{data\_model}] Only relevant if cell\_model = "monocle2". One of the following: 'negbinomial\_sz', 'negbinomial', 'tobit', 'uninormal', 'gaussianff'. See "Family Function" table at the following link for more details on selecting the proper one. \url{http://cole-trapnell-lab.github.io/monocle-release/docs/#getting-started-with-monocle}
+
+\item[\code{phate\_ncluster}] Only relevant if cell\_model = "phate". Number of cell state clusters to return when using PHATE
+
+\item[\code{phate\_cluster\_seed}] Only relevant if cell\_model = "phate". Seed to use when performing cell state clustering (optional)
+
+\item[\code{...}] Additional parameters to be passed to \code{reduceDimension} function for Monocle or \code{phate} function for PHATE
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{aggregateSamples} needs to be called before running this function.
+\end{Details}
+%
+\begin{Value}
+Same as input 'Phemd' object containing additional cell-state embedding object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_lg <- embedCells(my_phemdObj_lg, cell_model='monocle2', data_model = 'gaussianff', sigma=0.02, maxIter=2)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{gaussianffLocal}{Models expression data using generalized linear model with Gaussian error}{gaussianffLocal}
+%
+\begin{Description}\relax
+Useful for modeling pre-normalized single-cell expression data.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+gaussianffLocal(dispersion = 0, parallel = FALSE, zero = NULL)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{dispersion}] Dispersion parameter. If 0, then estimate as described in VGAM 1.0-5 documentation.
+
+\item[\code{parallel}] A logical or formula. If a formula, the response of the formula should be a logical and the terms of the formula indicates whether or not those terms are parallel.
+
+\item[\code{zero}] An integer-valued vector specifying which linear/additive predictors are modelled as intercepts only. The values must be from the set 1...M where Mis the number of columns of the matrix response.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not to be called by user directly). Requires VGAM package. Obtained from VGAM v1.0-5 (https://www.rdocumentation.org/packages/VGAM/versions/1.0-5/topics/gaussianff)
+\end{Details}
+%
+\begin{Value}
+Generalized linear model with Gaussian error
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{GDM}{Accessor function for EMD ground distance matrix}{GDM}
+%
+\begin{Description}\relax
+Accessor function for EMD ground distance matrix
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+GDM(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Sqaure matrix representing pairwise distances between cell subtypes
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+gdm <- GDM(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{generateGDM}{Computes ground distance matrix based on cell embedding}{generateGDM}
+%
+\begin{Description}\relax
+Takes as input a Phemd object containing cell-state embedding object. Returns updated object with ground distance matrix representing pairwise distances between distinct cell subtypes based on cell state embedding.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+generateGDM(
+  obj,
+  cell_model = c("monocle2", "seurat", "phate"),
+  expn_type = "reduced",
+  ndim = 8
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing cell-state embedding object
+
+\item[\code{cell\_model}] Method by which cell state was modeled (either "monocle2", "seurat", or "phate")
+
+\item[\code{expn\_type}] Data type to use to determine cell-type dissimilarities
+
+\item[\code{ndim}] Number of embedding dimensions to be used for computing cell-type dissimilarity (optional)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{embedCells} and \code{orderCellsMonocle} need to be called before calling this function. Requires 'igraph' package
+\end{Details}
+%
+\begin{Value}
+Phemd object with ground distance matrix (to be used in EMD computation) in @data\_cluster\_weights slot
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{getArithmeticCentroids}{Get arithmetic centroids (coordinates)}{getArithmeticCentroids}
+%
+\begin{Description}\relax
+Takes initial list and returns a matrix with row \var{i} representing the arithmetic centroid of cluster \var{i}
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getArithmeticCentroids(ref_clusters)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{ref\_clusters}] list containing each cluster of interest (each list element is a matrix of dimension num\_cells x num\_markers)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not exported in namespace)
+\end{Details}
+%
+\begin{Value}
+Matrix of dimension num\_cluster x num\_markers; row \var{i} representing the arithmetic centroid of cluster \var{i}
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+cluster_centroids <- getArithmeticCentroids(ref_clusters)
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{getCellYield}{Gets cell yield of each sample as a table}{getCellYield}
+%
+\begin{Description}\relax
+Gets cell yield (number of viable cells) of each single-cell sample in decreasing order
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getCellYield(myobj, cluster_assignments = NULL)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{myobj}] phemdObj object containing expression data for each sample in 'data' slot
+
+\item[\code{cluster\_assignments}] Vector of cluster assignments to be included as additional column in output table (optional)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Data frame representing cell yield of each sample
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+getCellYield(my_phemdObj_final, cluster_assignments)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{getSampleCelltypeFreqs}{Returns cell subtype distribution for each sample as a table}{getSampleCelltypeFreqs}
+%
+\begin{Description}\relax
+Returns cell subtype distribution for each single-cell sample along with (optional) final inhibitor cluster assignment
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getSampleCelltypeFreqs(myobj, cluster_assignments = NULL)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{myobj}] phemdObj object containing expression data for each sample in 'data' slot
+
+\item[\code{cluster\_assignments}] Vector of cluster assignments to be included as additional column in output table (optional)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Data frame representing relative frequencies of each cell subtype along with (optional) final inhibitor cluster assignment for each single-cell sample
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+getSampleCelltypeFreqs(my_phemdObj_final, cluster_assignments)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{getSampleHistsByCluster}{Gets cell subtype frequency histograms for each sample by cluster ID}{getSampleHistsByCluster}
+%
+\begin{Description}\relax
+Gets relative frequency ("weights") of cell subtypes ("bins" or "signatures") in each single-cell sample
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getSampleHistsByCluster(
+  myobj,
+  cluster_assignments,
+  cell_model = c("monocle2", "seurat")
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{myobj}] phemdObj object containing cell subtype relative frequency in @data\_cluster\_weights slot
+
+\item[\code{cluster\_assignments}] Vector containing group assignments for each sample in myobj
+
+\item[\code{cell\_model}] Method by which cell state was modeled (either "monocle2" or "seurat")
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{groupSamples} must be called before calling this function. Saves plots in directory called "individual\_inhibs"
+\end{Details}
+%
+\begin{Value}
+List of lists, with outer list representing sample cluster ID and inner list representing cell subtype frequencies of given sample
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+weights_by_cluster <- getSampleHistsByCluster(my_phemdObj_final, cluster_assignments)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{getSampleSizes}{Retrieve single-cell sample sizes}{getSampleSizes}
+%
+\begin{Description}\relax
+Takes initial list of single-cell samples and returns vector containing number of cells in each sample.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+getSampleSizes(data_list)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data\_list}] List of length num\_samples (each element has dimension num\_cells x num\_markers)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not exported in namespace)
+\end{Details}
+%
+\begin{Value}
+Vector of length num\_samples representing number of cells in each sample
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+sample_sizes <- getSampleSizes(all_expn_data)
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{groupSamples}{Performs community detection on sample-sample distance matrix to identify groups of similar samples}{groupSamples}
+%
+\begin{Description}\relax
+Takes sample-sample distance matrix as input and returns group assignments for each sample
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+groupSamples(
+  distmat,
+  distfun = "hclust",
+  ncluster = NULL,
+  method = "complete",
+  ...
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{distmat}] A distance matrix of dimension num\_samples x num\_samples representing pairwise dissimilarity between samples
+
+\item[\code{distfun}] Method of partitioning network of samples (currently either 'hclust' or 'pam')
+
+\item[\code{ncluster}] Optional parameter specifying total number of sample groups
+
+\item[\code{method}] Optional parameter for hierarchical clustering (see "hclust" documentation)
+
+\item[\code{...}] Optional additional parameters to be passed to diffusionKmeans method
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+By default, uses 'kgs' (Kelley-Gardner-Sutcliffe) method for determining optimal number of groups. Alternatively, can take user-specified number of groups). Requires 'cluster' and 'maptree' packages.
+\end{Details}
+%
+\begin{Value}
+Vector containing group assignments for each sample (same order as row-order of distmat) based on user-specified partitioning method (e.g. hierarchical clustering)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, cell_model = 'monocle2', data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{heatmap\_genes}{Genes to be used when plotting heatmap for melanoma single-cell RNA-seq expression data}{heatmap.Rul.genes}
+\keyword{datasets}{heatmap\_genes}
+%
+\begin{Description}\relax
+This object contains genes to be used when plotting heatmap for melanoma single-cell RNA-seq expression data.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+  data(heatmap_genes)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+Vector of length 42 representing selected genes for plotting heatmap.
+\end{Format}
+%
+\begin{Source}\relax
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+\end{Source}
+%
+\begin{References}\relax
+Tirosh, I. et al. Dissecting the multicellular ecosystem of metastatic melanoma by single-cell RNA-seq. Science 352, 189–196 (2016)
+\end{References}
+\inputencoding{utf8}
+\HeaderA{identifyCentroids}{Identify cluster centroids (cell names)}{identifyCentroids}
+%
+\begin{Description}\relax
+Takes initial list and returns list of cell names representing centroid of cluster
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+identifyCentroids(ref_clusters)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{ref\_clusters}] list containing each cluster of interest (each list element is a matrix of dimension num\_cells x num\_markers)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not exported in namespace)
+\end{Details}
+%
+\begin{Value}
+List of names; element \var{i} represents the name of the cell in cluster \var{i} that is closest to the centroid (arithmetic mean) of cluster \var{i}
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+centroid_names <- identifyCentroids(ref_clusters)
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{monocleInfo}{Accessor function for stored Monocle object}{monocleInfo}
+%
+\begin{Description}\relax
+Accessor function for stored Monocle object
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+monocleInfo(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An object of class 'CellDataSet' (from Monocle)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+monocle_obj <- monocleInfo(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{orderCellsMonocle}{Compute Monocle2 cell state and pseudotime assignments}{orderCellsMonocle}
+%
+\begin{Description}\relax
+Takes as input a Phemd object with Monocle2 object and returns updated object with Monocle2 object containing cell state and pseudotime assignments
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+orderCellsMonocle(obj, ...)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing Monocle2 object initialized using embedCells
+
+\item[\code{...}] Additional parameters to be passed into \code{orderCells} function
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Wrapper function for \code{orderCells} in Monocle 2 package. \code{embedCells} needs to be called before calling this function.
+\end{Details}
+%
+\begin{Value}
+Same as input 'Phemd' object with updated cell-state embedding object containing cell state assignments
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, cell_model='monocle2', data_model='gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{phateInfo}{Accessor function for stored phate object}{phateInfo}
+%
+\begin{Description}\relax
+Accessor function for stored phate object
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+phateInfo(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An object of class 'phate' (from phateR)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+phateobj <- phateInfo(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{Phemd}{Phemd class}{Phemd}
+\aliasA{Phemd-class}{Phemd}{Phemd.Rdash.class}
+%
+\begin{Description}\relax
+The main PhEMD class to store single-cell expression data.
+\end{Description}
+%
+\begin{Section}{Fields}
+
+\begin{description}
+
+\item[\code{data}] List of matrices, each of which represents a single-cell sample (num\_cells x num\_genes)
+
+\item[\code{markers}] Column names (e.g. genes) for each element (i.e. data matrix) in "data"
+
+\item[\code{snames}] Sample ID for each element in "data"
+
+\item[\code{data\_aggregate}] Numeric matrix representing expression data for cells from all experimental conditions (rows = markers, cols = cells)
+
+\item[\code{data\_subsample\_idx}] List of vectors each representing the indices of elements in "data" that were subsampled and combined to form "data\_aggregate"
+
+\item[\code{subsampled\_bool}] Boolean represent whether or not subsampling was performed in the data aggregation process
+
+\item[\code{monocle\_obj}] Data object of type "CellDataSet" that is the core Monocle data structure
+
+\item[\code{data\_cluster\_weights}] Matrix representing cell subtype relative frequencies for each sample (num\_samples x num\_genes)
+
+\item[\code{emd\_dist\_mat}] Matrix representing pairwise distances between each pair of cell subtypes
+
+\item[\code{seurat\_obj}] Object of class "Seurat" that is the core Seurat data structure
+
+\item[\code{phate\_obj}] Object of class "phate" that is the core PHATE data structure
+
+\item[\code{experiment\_ids}] Vector of length num\_samples representing the experiment (batch) in which the sample was profiled
+
+\end{description}
+\end{Section}
+\inputencoding{utf8}
+\HeaderA{Phemd-methods}{Setter function for protein / gene markers}{Phemd.Rdash.methods}
+\aliasA{batchIDs<\Rdash{}}{Phemd-methods}{batchIDs<.Rdash.}
+\aliasA{batchIDs<\Rdash{},Phemd-method}{Phemd-methods}{batchIDs<.Rdash.,Phemd.Rdash.method}
+\aliasA{celltypeFreqs<\Rdash{}}{Phemd-methods}{celltypeFreqs<.Rdash.}
+\aliasA{celltypeFreqs<\Rdash{},Phemd-method}{Phemd-methods}{celltypeFreqs<.Rdash.,Phemd.Rdash.method}
+\aliasA{GDM<\Rdash{}}{Phemd-methods}{GDM<.Rdash.}
+\aliasA{GDM<\Rdash{},Phemd-method}{Phemd-methods}{GDM<.Rdash.,Phemd.Rdash.method}
+\aliasA{monocleInfo<\Rdash{}}{Phemd-methods}{monocleInfo<.Rdash.}
+\aliasA{monocleInfo<\Rdash{},Phemd-method}{Phemd-methods}{monocleInfo<.Rdash.,Phemd.Rdash.method}
+\aliasA{phateInfo<\Rdash{}}{Phemd-methods}{phateInfo<.Rdash.}
+\aliasA{phateInfo<\Rdash{},Phemd-method}{Phemd-methods}{phateInfo<.Rdash.,Phemd.Rdash.method}
+\aliasA{Phemd,ANY,ANY-method}{Phemd-methods}{Phemd,ANY,ANY.Rdash.method}
+\aliasA{Phemd,character,ANY-method}{Phemd-methods}{Phemd,character,ANY.Rdash.method}
+\aliasA{pooledCells<\Rdash{}}{Phemd-methods}{pooledCells<.Rdash.}
+\aliasA{pooledCells<\Rdash{},Phemd-method}{Phemd-methods}{pooledCells<.Rdash.,Phemd.Rdash.method}
+\aliasA{rawExpn<\Rdash{}}{Phemd-methods}{rawExpn<.Rdash.}
+\aliasA{rawExpn<\Rdash{},Phemd-method}{Phemd-methods}{rawExpn<.Rdash.,Phemd.Rdash.method}
+\aliasA{selectMarkers<\Rdash{}}{Phemd-methods}{selectMarkers<.Rdash.}
+\aliasA{selectMarkers<\Rdash{},Phemd-method}{Phemd-methods}{selectMarkers<.Rdash.,Phemd.Rdash.method}
+\aliasA{seuratInfo<\Rdash{}}{Phemd-methods}{seuratInfo<.Rdash.}
+\aliasA{seuratInfo<\Rdash{},Phemd-method}{Phemd-methods}{seuratInfo<.Rdash.,Phemd.Rdash.method}
+\aliasA{subsampledBool<\Rdash{}}{Phemd-methods}{subsampledBool<.Rdash.}
+\aliasA{subsampledBool<\Rdash{},Phemd-method}{Phemd-methods}{subsampledBool<.Rdash.,Phemd.Rdash.method}
+\aliasA{subsampledIdx<\Rdash{}}{Phemd-methods}{subsampledIdx<.Rdash.}
+\aliasA{subsampledIdx<\Rdash{},Phemd-method}{Phemd-methods}{subsampledIdx<.Rdash.,Phemd.Rdash.method}
+%
+\begin{Description}\relax
+Setter function for protein / gene markers
+
+Setter function for stored expression data
+
+Setter function for single-cell expression data aggregated from multiple samples
+
+Setter function for indices of cells subsampled from each sample during aggregation
+
+Setter function for boolean denoting whether cells were subsampled from each sample during aggregation
+
+Setter function for Monocle2 CellDataSet object for experiment
+
+Setter function for Seurat object for experiment
+
+Setter function for phate object for experiment
+
+Setter function for cell subtype frequencies of each single-cell sample
+
+Setter function for batch IDs of each single-cell sample
+
+Setter function for EMD ground distance matrix
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+selectMarkers(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+selectMarkers(obj) <- value
+
+rawExpn(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+rawExpn(obj) <- value
+
+pooledCells(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+pooledCells(obj) <- value
+
+subsampledIdx(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+subsampledIdx(obj) <- value
+
+subsampledBool(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+subsampledBool(obj) <- value
+
+monocleInfo(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+monocleInfo(obj) <- value
+
+seuratInfo(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+seuratInfo(obj) <- value
+
+phateInfo(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+phateInfo(obj) <- value
+
+celltypeFreqs(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+celltypeFreqs(obj) <- value
+
+batchIDs(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+batchIDs(obj) <- value
+
+GDM(obj) <- value
+
+## S4 replacement method for signature 'Phemd'
+GDM(obj) <- value
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object
+
+\item[\code{value}] Assignment object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Updated Phemd object
+
+Updated Phemd object
+
+Updated Phemd object
+
+Updated Phemd object
+
+Updated Phemd object
+
+Updated Phemd object containing Seurat object
+
+Updated Phemd object containing phate object
+
+Updated Phemd object
+
+Updated Phemd object
+
+Updated Phemd object
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+new_genes <- all_genes
+new_genes[1] <- 'IL2R'
+selectMarkers(phemdObj) <- new_genes
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+new_expn_data <- all_expn_data
+new_expn_data <- lapply(new_expn_data, function(x) {log2(x+1)})
+rawExpn(phemdObj) <- new_expn_data
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+aggregated_data <- t(do.call(rbind,all_expn_data))
+pooledCells(phemdObj) <- aggregated_data
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+subsampledIdxList<- rep(list(1:10), length(all_expn_data)) #subsampled cells 1-10 from each sample
+subsampledIdx(phemdObj) <- subsampledIdxList
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+subsampledBool(phemdObj) <- TRUE
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+mydata <- pooledCells(phemdObj)
+myCellDataSet <- newCellDataSet(mydata,phenoData=NULL, expressionFamily=VGAM::negbinomial.size())
+monocleInfo(phemdObj) <- myCellDataSet
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+seuratInfo(phemdObj) <- my_seuratObj
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+#my_phateObj <- phateR::phate(all_expn_data[[1]])
+phateInfo(phemdObj) <- list()
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+myCellTypeFreqs <- matrix(rexp(length(all_expn_data)*10, rate=.1), ncol=10)
+myCellTypeFreqs <- apply(myCellTypeFreqs, 1, function(x) {x / sum(x)})
+celltypeFreqs(phemdObj) <- myCellTypeFreqs
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+seuratInfo(phemdObj) <- my_seuratObj
+batchIDs(phemdObj) <- rep('A', length(all_expn_data))
+
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+cluster_locs <- 1:10
+myGDM <- as.matrix(dist(cluster_locs))
+GDM(phemdObj) <- myGDM
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{plotCellYield}{Plot cell yield of each sample as bar plot}{plotCellYield}
+%
+\begin{Description}\relax
+Plots cell yield (number of viable cells) of each single-cell sample in decreasing order as horizontal bar plot
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotCellYield(myobj, labels = NULL, cmap = NULL, font_sz = 0.6, w = 8, h = 9.5)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{myobj}] Phmed object containing expression data for each sample in 'data' slot
+
+\item[\code{labels}] Vector containing group labels for samples (optional). If not provided, bars will be of uniform color (blue)
+
+\item[\code{cmap}] Vector containing colors by which histogram bars should be colored (optional)
+
+\item[\code{font\_sz}] Scaling factor for font size of sample names in barplot
+
+\item[\code{w}] Width of plot in inches
+
+\item[\code{h}] Height of plot in inches
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+None
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+plotCellYield(my_phemdObj_final, labels=cluster_assignments, font_sz = 0.8)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{plotEmbeddings}{Plots Monocle2 cell embedding plots}{plotEmbeddings}
+%
+\begin{Description}\relax
+Takes as input a Phemd object containing either a Monocle2 object or Seurat object (already embedded and ordered) and plots cell embedding plots side by side. Optionally saves to specified folder.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotEmbeddings(
+  obj,
+  cell_model = c("monocle2", "seurat", "phate"),
+  cmap = NULL,
+  w = 4,
+  h = 5,
+  pt_sz = 1,
+  ndims = NULL
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing Monocle 2 object
+
+\item[\code{cell\_model}] Method by which cell state was modeled (either "monocle2", "seurat", or "phate)
+
+\item[\code{cmap}] User-specified colormap to use to color cell state embedding (optional)
+
+\item[\code{w}] Width of plot in inches
+
+\item[\code{h}] Height of plot in inches
+
+\item[\code{pt\_sz}] Scalar factor for point size
+
+\item[\code{ndims}] Number of dimensions to use for dimensionality reduction in case it hasn't been performed yet (only relevant when using Seurat data as input)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{embedCells} and \code{orderCellsMonocle} need to be called before calling this function. Required additional packages: 'RColorBrewer', 'cowplot'
+\end{Details}
+%
+\begin{Value}
+Colormap (vector of colors) used to color Monocle2 cell state embedding
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model='gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+cmap <- plotEmbeddings(my_phemdObj_monocle)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{plotGroupedSamplesDmap}{Plot diffusion map embedding of samples based on distance matrix}{plotGroupedSamplesDmap}
+%
+\begin{Description}\relax
+Visualizes diffusion map for network of samples based on square distance matrix (sample-sample pairwise dissimilarity)
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotGroupedSamplesDmap(
+  my_distmat,
+  cluster_assignments = NULL,
+  pt_sz = 1,
+  n_dim = 3,
+  pt_label = NULL,
+  cmap = NULL,
+  w = 8,
+  h = 5,
+  scale.y = 1,
+  angle = 40,
+  autosave = FALSE,
+  ...
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{my\_distmat}] phemdObj object containing sample names in @snames slot
+
+\item[\code{cluster\_assignments}] Vector containing group assignments for each sample
+
+\item[\code{pt\_sz}] Size of points representing samples in plot (scaling factor)
+
+\item[\code{n\_dim}] Number of dimensions for embedding (either 2 or 3)
+
+\item[\code{pt\_label}] Vector of sample names corresponding to each point (same order as samples in \code{my\_distmat} and \code{cluster\_assignments})
+
+\item[\code{cmap}] Vector containing colors by which points should be colored (corresponding to cluster\_assignments)
+
+\item[\code{w}] Width of plot in inches
+
+\item[\code{h}] Height of plot in inches
+
+\item[\code{scale.y}] Scaling factor for diffusion map y-axis
+
+\item[\code{angle}] Rotation factor for diffusion map plot
+
+\item[\code{autosave}] Boolean denoting whether or not to save output diffusion map
+
+\item[\code{...}] Additional parameters to be passed to \code{DiffusionMap} function
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Requires 'destiny' package
+\end{Details}
+%
+\begin{Value}
+DiffusionMap object containing biological sample embedding and associated metadata
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+printClusterAssignments(cluster_assignments, my_phemdObj_final, '.', overwrite=TRUE)
+dm <- plotGroupedSamplesDmap(my_EMD_mat, cluster_assignments, pt_sz=2)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{plotHeatmaps}{Plot heatmap of cell subtypes}{plotHeatmaps}
+%
+\begin{Description}\relax
+Takes as input a Phemd object containing either a Monocle2, Seurat, or PHATE object (already embedded and clustered) and plots heatmap characterizing cell subtypes
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotHeatmaps(
+  obj,
+  cell_model = c("monocle2", "seurat", "phate"),
+  selected_genes = NULL,
+  w = 8,
+  h = 5,
+  ...
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing cell-state embedding object
+
+\item[\code{cell\_model}] Method by which cell state was modeled ("monocle2", "seurat", or "phate")
+
+\item[\code{selected\_genes}] Vector containing gene names to include in heatmap (optional)
+
+\item[\code{w}] Width of plot in inches
+
+\item[\code{h}] Height of plot in inches
+
+\item[\code{...}] Additional parameters to be passed on to pheatmap function
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{embedCells} (and \code{orderCellsMonocle} if using Monocle2) need to be called before calling this function. Required additional package: 'pheatmap'
+\end{Details}
+%
+\begin{Value}
+Heatmap containing expression values for each cell subtype. If cell\_model is 'seurat', then returns a list of heatmaps (1 for each batch) that may be subsequently plotted individually
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_lg <- selectFeatures(my_phemdObj_lg, selected_genes)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff',
+pseudo_expr=0, sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+myheatmap <- plotHeatmaps(my_phemdObj_monocle, cell_model='monocle2')
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{plotSummaryHistograms}{Plots cell subtype frequency histograms summarizing each group of samples}{plotSummaryHistograms}
+%
+\begin{Description}\relax
+Visualizes plots of relative frequency ("weights") of cell subtypes ("bins" or "signatures") summarizing each group of single-cell samples. Each summary histogram is computed by taking the bin-wise mean of all samples in the group
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plotSummaryHistograms(
+  myobj,
+  cluster_assignments,
+  cell_model = c("monocle2", "seurat", "phate"),
+  cmap = NULL,
+  ncol.plot = 4,
+  ax.lab.sz = 2.5,
+  title.sz = 3
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{myobj}] Phemd object containing cell subtype relative frequency in @data\_cluster\_weights slot
+
+\item[\code{cluster\_assignments}] Vector containing group assignments for each sample in myobj
+
+\item[\code{cell\_model}] Method by which cell state was modeled (either "monocle2", "seurat", or "phate")
+
+\item[\code{cmap}] Vector containing colors by which histogram bars should be colored (optional)
+
+\item[\code{ncol.plot}] Number of columns to use to plot multi-panel histogram plot
+
+\item[\code{ax.lab.sz}] Scaling factor for axis labels (default 2.5)
+
+\item[\code{title.sz}] Scaling factor for plot title (default 3)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{groupSamples} must be called before calling this function. Saves plots in directory called "summary\_inhibs"
+\end{Details}
+%
+\begin{Value}
+None
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{pooledCells}{Accessor function for aggregated cells used for cell subtype definition}{pooledCells}
+%
+\begin{Description}\relax
+Accessor function for aggregated cells used for cell subtype definition
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+pooledCells(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Numeric matrix representing expression data for cells from all experimental conditions (rows = markers, cols = cells)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+cells_aggregated <- pooledCells(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{printClusterAssignments}{Writes samples to file based on community detection group assignments}{printClusterAssignments}
+%
+\begin{Description}\relax
+Takes vector of cluster assignments and phemdObj containing sample names and writes sample groups to file
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+printClusterAssignments(cluster_assignments, obj, dest, overwrite = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{cluster\_assignments}] Vector containing group assignments for each sample
+
+\item[\code{obj}] phemdObj object containing sample names in @snames slot
+
+\item[\code{dest}] Path to existing directory where output should be saved
+
+\item[\code{overwrite}] Boolean representing whether or not to overwrite contents of "dest" with output of printClusterAssignments
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Order of samples in obj@snames is assumed to be the same as the order of group assignments in cluster\_assignments
+\end{Details}
+%
+\begin{Value}
+None
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+my_phemdObj_final <- generateGDM(my_phemdObj_final)
+my_EMD_mat <- compareSamples(my_phemdObj_final)
+cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+printClusterAssignments(cluster_assignments, my_phemdObj_final, '.', overwrite=TRUE)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{rawExpn}{Accessor function for stored multi-sample raw expression data}{rawExpn}
+%
+\begin{Description}\relax
+Accessor function for stored multi-sample raw expression data
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+rawExpn(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+List of matrices, each of which represents a single-cell sample
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+raw_expn_data <- rawExpn(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{removeTinySamples}{Remove samples with too few cells}{removeTinySamples}
+%
+\begin{Description}\relax
+Removes samples from Phemd that have fewer cells than \code{min\_sz}
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+removeTinySamples(obj, min_sz = 20)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing raw expression data and associated metadata
+
+\item[\code{min\_sz}] Minimum number of cells in each sample to be retained
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Note: If used, this function must be called before (and not after) the \code{aggregateSamples} function is called
+\end{Details}
+%
+\begin{Value}
+'Phemd' object containing raw multi-sample expression data and associated metadata (same as input minus removed samples)
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10) #removes samples with fewer than 10 cells
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{retrieveRefClusters}{Retrieve reference cell clusters}{retrieveRefClusters}
+%
+\begin{Description}\relax
+Takes initial Phemd struct and returns cell clusters as assigned by clustering algorithm (e.g. PHATE or Monocle2)
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+retrieveRefClusters(
+  obj,
+  cell_model = c("monocle2", "seurat", "phate"),
+  expn_type = "reduced",
+  ndim = 10
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd struct containing cell-state embedding object and underlying expression data
+
+\item[\code{cell\_model}] String representing data model for cell-state space ("seurat", "monocle2", or "phate")
+
+\item[\code{expn\_type}] String representing whether to return raw expression values or coordinates in dimensionality-reduced feature space
+
+\item[\code{ndim}] Number of dimensions in reduced dimensionality space (e.g. PHATE / CCA) to use (only relevant in reduced dimensionality space)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+Private method (not exported in namespace)
+\end{Details}
+%
+\begin{Value}
+List of data matrices; each list element is of size num\_cells\_in\_cluster x num\_markers and represents a distinct cell cluster
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+cluster_expression_data <- retrieveRefClusters(my_phemdObj)
+
+## End(Not run)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{selected\_genes}{Genes to be used when performing clustering and trajectory analyses on melanoma single-cell RNA-seq expression data}{selected.Rul.genes}
+\keyword{datasets}{selected\_genes}
+%
+\begin{Description}\relax
+This object contains genes to be used when performing clustering and trajectory analyses on melanoma single-cell RNA-seq expression data.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+  data(selected_genes)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+Vector of length 44 representing selected genes for performing computational analyses such as generating cell embeddings and clustering cell subtypes.
+\end{Format}
+%
+\begin{Source}\relax
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+\end{Source}
+%
+\begin{References}\relax
+Tirosh, I. et al. Dissecting the multicellular ecosystem of metastatic melanoma by single-cell RNA-seq. Science 352, 189–196 (2016)
+\end{References}
+\inputencoding{utf8}
+\HeaderA{selectFeatures}{Perform feature selection on aggregated data}{selectFeatures}
+%
+\begin{Description}\relax
+Takes as input a Phemd object with aggregated data and returns updated object after performing feature selection on aggregated data
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+selectFeatures(obj, selected_genes)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] 'Phemd' object containing aggregated data
+
+\item[\code{selected\_genes}] Vector containing names of genes to use for downstream analyses
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Details}\relax
+\code{aggregateSamples} needs to be called before running this function
+\end{Details}
+%
+\begin{Value}
+Same as input 'Phemd' object after performing feature-selection based dimensionality reduction on aggregated expression data
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+
+my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+my_phemdObj_lg <- selectFeatures(my_phemdObj_lg, selected_genes=c('TP53',
+'EGFR', 'KRAS', 'FOXP3', 'LAG3'))
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{selectMarkers}{Accessor function for gene/protein markers measured in experiment}{selectMarkers}
+%
+\begin{Description}\relax
+Accessor function for gene/protein markers measured in experiment
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+selectMarkers(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Vector representing gene/protein markers corresponding to expression matrices
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+genes <- selectMarkers(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{seuratInfo}{Accessor function for stored Seurat object within Phemd object}{seuratInfo}
+%
+\begin{Description}\relax
+Accessor function for stored Seurat object within Phemd object
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+seuratInfo(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] A Phemd object.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An object of class 'Seurat'
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+seurat_obj <- seuratInfo(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{sNames}{Accessor function for identifiers of all single-cell samples in experiment}{sNames}
+%
+\begin{Description}\relax
+Accessor function for identifiers of all single-cell samples in experiment
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+sNames(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Vector representing sample names corresponding to expression matrices
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+sampleIDs <- sNames(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{snames\_data}{Sample names for melanoma single-cell RNA-seq expression data}{snames.Rul.data}
+\keyword{datasets}{snames\_data}
+%
+\begin{Description}\relax
+This object contains sample names corresponding to samples contained in melanoma expression data.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+  data("snames_data")
+  
+\end{verbatim}
+\end{Usage}
+%
+\begin{Format}
+Vector of length 19 representing sample names corresponding to order of samples in all\_expn\_data in melanomaData dataset.
+\end{Format}
+%
+\begin{Source}\relax
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+\end{Source}
+%
+\begin{References}\relax
+Tirosh, I. et al. Dissecting the multicellular ecosystem of metastatic melanoma by single-cell RNA-seq. Science 352, 189–196 (2016)
+\end{References}
+\inputencoding{utf8}
+\HeaderA{subsampledBool}{Accessor function for whether or not cells were subsampled when aggregated for cell subtype analysis}{subsampledBool}
+%
+\begin{Description}\relax
+Accessor function for whether or not cells were subsampled when aggregated for cell subtype analysis
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+subsampledBool(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Boolean represent whether or not subsampling was performed in the data aggregation process
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+subsampled <- subsampledBool(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{subsampledIdx}{Accessor function for aggregated cells used for cell subtype definition}{subsampledIdx}
+%
+\begin{Description}\relax
+Accessor function for aggregated cells used for cell subtype definition
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+subsampledIdx(obj)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{obj}] Phemd object
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+List of vectors each representing the indices of elements in rawExpn(obj) that were subsampled and combined to form "data\_aggregate"
+\end{Value}
+%
+\begin{Examples}
+\begin{ExampleCode}
+phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+subsampled_idx_list <- subsampledIdx(phemdObj)
+
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}

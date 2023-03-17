@@ -1,0 +1,1250 @@
+
+R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "phemd"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('phemd')
+Loading required package: monocle
+Loading required package: Matrix
+Loading required package: Biobase
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,
+    as.data.frame, basename, cbind, colnames, dirname, do.call,
+    duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,
+    lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,
+    pmin.int, rank, rbind, rownames, sapply, setdiff, sort, table,
+    tapply, union, unique, unsplit, which.max, which.min
+
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+Loading required package: ggplot2
+Loading required package: VGAM
+Loading required package: stats4
+Loading required package: splines
+Loading required package: DDRTree
+Loading required package: irlba
+Loading required package: Seurat
+Attaching SeuratObject
+Warning: Package 'phemd' is deprecated and will be removed from Bioconductor
+  version 3.18
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("GDM")
+> ### * GDM
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: GDM
+> ### Title: Accessor function for EMD ground distance matrix
+> ### Aliases: GDM
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> gdm <- GDM(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("Phemd-methods")
+> ### * Phemd-methods
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Phemd-methods
+> ### Title: Setter function for protein / gene markers
+> ### Aliases: Phemd-methods selectMarkers<- selectMarkers<-,Phemd-method
+> ###   Phemd,ANY,ANY-method rawExpn<- Phemd,character,ANY-method
+> ###   rawExpn<-,Phemd-method pooledCells<- pooledCells<-,Phemd-method
+> ###   subsampledIdx<- subsampledIdx<-,Phemd-method subsampledBool<-
+> ###   subsampledBool<-,Phemd-method monocleInfo<-
+> ###   monocleInfo<-,Phemd-method seuratInfo<- seuratInfo<-,Phemd-method
+> ###   phateInfo<- phateInfo<-,Phemd-method celltypeFreqs<-
+> ###   celltypeFreqs<-,Phemd-method batchIDs<- batchIDs<-,Phemd-method GDM<-
+> ###   GDM<-,Phemd-method
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> new_genes <- all_genes
+> new_genes[1] <- 'IL2R'
+> selectMarkers(phemdObj) <- new_genes
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> new_expn_data <- all_expn_data
+> new_expn_data <- lapply(new_expn_data, function(x) {log2(x+1)})
+> rawExpn(phemdObj) <- new_expn_data
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> aggregated_data <- t(do.call(rbind,all_expn_data))
+> pooledCells(phemdObj) <- aggregated_data
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> subsampledIdxList<- rep(list(1:10), length(all_expn_data)) #subsampled cells 1-10 from each sample
+> subsampledIdx(phemdObj) <- subsampledIdxList
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> subsampledBool(phemdObj) <- TRUE
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> mydata <- pooledCells(phemdObj)
+> myCellDataSet <- newCellDataSet(mydata,phenoData=NULL, expressionFamily=VGAM::negbinomial.size())
+Warning in newCellDataSet(mydata, phenoData = NULL, expressionFamily = VGAM::negbinomial.size()) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, expressionFamily = VGAM::negbinomial.size()) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, expressionFamily = VGAM::negbinomial.size()) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> monocleInfo(phemdObj) <- myCellDataSet
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+> seuratInfo(phemdObj) <- my_seuratObj
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> #my_phateObj <- phateR::phate(all_expn_data[[1]])
+> phateInfo(phemdObj) <- list()
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> myCellTypeFreqs <- matrix(rexp(length(all_expn_data)*10, rate=.1), ncol=10)
+> myCellTypeFreqs <- apply(myCellTypeFreqs, 1, function(x) {x / sum(x)})
+> celltypeFreqs(phemdObj) <- myCellTypeFreqs
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+> seuratInfo(phemdObj) <- my_seuratObj
+> batchIDs(phemdObj) <- rep('A', length(all_expn_data))
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> cluster_locs <- 1:10
+> myGDM <- as.matrix(dist(cluster_locs))
+> GDM(phemdObj) <- myGDM
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("aggregateSamples")
+> ### * aggregateSamples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: aggregateSamples
+> ### Title: Aggregate expression data from all samples
+> ### Aliases: aggregateSamples
+> 
+> ### ** Examples
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("assignCellClusterNearestNode")
+> ### * assignCellClusterNearestNode
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: assignCellClusterNearestNode
+> ### Title: Assign cells to a reference cell subtype
+> ### Aliases: assignCellClusterNearestNode
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D cur_cells_cluster_labels <- assignCellClusterNearestNode(cur_cells_expn_data,
+> ##D clustered_cells_expn_data, clustered_cells_cluster_labels, cell_model='monocle2')
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("batchIDs")
+> ### * batchIDs
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: batchIDs
+> ### Title: Accessor function for batch ID for each sample
+> ### Aliases: batchIDs
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> batch_metadata <- batchIDs(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("bindSeuratObj")
+> ### * bindSeuratObj
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: bindSeuratObj
+> ### Title: Attach 'Seurat' object to 'Phemd' object
+> ### Aliases: bindSeuratObj
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_seuratObj <- Seurat::CreateSeuratObject(counts = t(all_expn_data[[1]]), project = "A")
+> my_seuratObj <- Seurat::FindVariableFeatures(object = my_seuratObj)
+Calculating gene variances
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Calculating feature variances of standardized and clipped values
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+> my_seuratObj <- Seurat::ScaleData(object = my_seuratObj, do.scale=FALSE, do.center=FALSE)
+  |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%
+> my_seuratObj <- Seurat::RunPCA(object = my_seuratObj, pc.genes = colnames(all_expn_data[[1]]), do.print = FALSE)
+Warning in irlba(A = t(x = object), nv = npcs, ...) :
+  You're computing too large a percentage of total singular values, use a standard svd instead.
+PC_ 1 
+Positive:  SDR16C5, HSD11B1, CCDC173, PRDM5, TMEM63C, PRTG, PPIAL4E, SSTR5, CD19, CBR3-AS1 
+	   VWA1, ZNF695, PTGDR2, HES1, CCNE2, TMEM51-AS1, COL6A3, DCN, ZNF358, PLAC4 
+	   FAP, LOC644554, THY1, COL6A1, CD79A, TMEM150A, COL1A2, CDH5, ZNF671, COL1A1 
+Negative:  S100A4, CD3D, CD2, SELL, TAP1, CD3G, CD3E, TNFRSF1B, DEF6, CD4 
+	   CD27, CALCOCO2, HAVCR2, FCGR3A, TIGIT, CCR7, TNFRSF9, CD8A, TCF7, DAXX 
+	   IL2RA, PECAM1, IFNG, PDCD1, TMEM183B, LETMD1, CD79B, CIITA, HMBOX1, ZCCHC11 
+PC_ 2 
+Positive:  FCGR3A, CD14, CSF1R, CD163, S100A4, HAVCR2, PECAM1, CIITA, CD4, TMEM183B 
+	   TNFRSF1B, TARBP2, COL1A1, TAP1, FCGR3B, COL6A2, COL1A2, CALCOCO2, VWF, SELL 
+	   DAXX, COL6A1, CDH5, KCTD9, THY1, HMBOX1, COL6A3, CTNS, TMEM150A, CD79B 
+Negative:  CD3D, CD2, CD3E, CD27, CD3G, CCR7, TIGIT, CD8A, PDCD1, DEF6 
+	   TCF7, LEF1, IL2RA, FOXP3, CTLA4, LAG3, IFNG, CCR8, CENPC1, ZNF749 
+	   LETMD1, TMEM51-AS1, TNFRSF9, CCNE2, ZNF671, ZNF695, PPIAL4E, TMEM63C, SSTR5, MFSD4 
+PC_ 3 
+Positive:  FCGR3A, CD4, CD14, CSF1R, SELL, CD163, TNFRSF1B, CD79B, CIITA, IL2RA 
+	   TAP1, DEF6, FCGR3B, FOXP3, CCR7, CCR8, TIGIT, CD27, CTLA4, HAVCR2 
+	   BLK, FLJ34208, LACTB2, CD19, ZNF671, ZNF695, TCF7, SDR16C5, PRTG, HSD11B1 
+Negative:  COL1A2, COL1A1, COL6A2, COL6A1, DCN, COL6A3, THY1, CALCOCO2, DAXX, FAP 
+	   VWF, TARBP2, S100A4, RNPEP, CDH5, NFATC1, KCTD9, ZNF358, TMEM150A, PECAM1 
+	   HMBOX1, ZCCHC11, CD3E, LETMD1, VWA1, CBR3-AS1, TMEM183B, CTNS, HES1, CD2 
+PC_ 4 
+Positive:  CD4, CD27, CCR7, TNFRSF1B, IL2RA, CD79B, LETMD1, VWF, SELL, FOXP3 
+	   CDH5, CIITA, CCR8, TCF7, LEF1, PECAM1, CTLA4, TNFRSF9, TAP1, CD14 
+	   CSF1R, COL6A2, CALCOCO2, FAP, TIGIT, THY1, CTNS, TARBP2, VWA1, COL1A2 
+Negative:  CD8A, FCGR3A, IFNG, S100A4, CD3E, CD3G, CD3D, DAXX, HMBOX1, TMEM183B 
+	   LAG3, HAVCR2, NCAM1, ZCCHC11, RNPEP, CD2, KCTD9, GJD4, ZNF671, CCNE2 
+	   TMEM51-AS1, CD79A, TMEM63C, SSTR5, SDR16C5, FCGR3B, LOC644554, CCDC173, PRDM5, HSD11B1 
+PC_ 5 
+Positive:  S100A4, CD4, DEF6, TIGIT, CD14, CD3E, CD27, CD2, CD79B, PDCD1 
+	   CCR8, FOXP3, CTLA4, IL2RA, CSF1R, CD163, COL1A1, COL1A2, CALCOCO2, COL6A1 
+	   COL6A3, DCN, TNFRSF9, HAVCR2, RNPEP, TMEM51-AS1, NCAM1, NFATC1, ZNF358, ZNF695 
+Negative:  SELL, CD8A, TAP1, VWF, PECAM1, CDH5, CCR7, LETMD1, CIITA, IFNG 
+	   VWA1, HMBOX1, BLK, TMEM150A, COL6A2, FAP, TMEM183B, CD3G, TNFRSF1B, TCF7 
+	   LEF1, ZCCHC11, FAM20B, THY1, CTNS, HES1, LACTB2, TARBP2, PLAC4, ZNF671 
+> my_seuratObj <- Seurat::FindNeighbors(my_seuratObj, reduction = "pca", dims.use = 1:10)
+Warning: The following arguments are not used: dims.use
+Suggested parameter: dims instead of dims.use
+
+Warning: The following arguments are not used: dims.use
+Suggested parameter: dims instead of dims.use
+
+Computing nearest neighbor graph
+Computing SNN
+> my_seuratObj <- Seurat::FindClusters(my_seuratObj, resolution = 0.6, print.output = 0, save.SNN = TRUE)
+Warning: The following arguments are not used: print.output, save.SNN
+Suggested parameter: verbose instead of print.output
+
+Warning: The following arguments are not used: print.output, save.SNN
+Suggested parameter: verbose instead of print.output
+
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 124
+Number of edges: 3886
+
+Running Louvain algorithm...
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Maximum modularity in 10 random starts: 0.6176
+Number of communities: 2
+Elapsed time: 0 seconds
+> my_phemdObj <- bindSeuratObj(my_phemdObj, my_seuratObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("celltypeFreqs")
+> ### * celltypeFreqs
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: celltypeFreqs
+> ### Title: Accessor function for cell subtype distribution for each sample
+> ### Aliases: celltypeFreqs
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> celltype_weights <- celltypeFreqs(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("clusterIndividualSamples")
+> ### * clusterIndividualSamples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: clusterIndividualSamples
+> ### Title: Computes cell subtype abundances for each sample
+> ### Aliases: clusterIndividualSamples
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("compareSamples")
+> ### * compareSamples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: compareSamples
+> ### Title: Computes EMD distance matrix representing pairwise dissimilarity
+> ###   between samples
+> ### Aliases: compareSamples
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("createDataObj")
+> ### * createDataObj
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: createDataObj
+> ### Title: Create 'Phemd' object
+> ### Aliases: createDataObj
+> 
+> ### ** Examples
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("drawColnames45")
+> ### * drawColnames45
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: drawColnames45
+> ### Title: Rotates heatmap marker labels 45 degrees
+> ### Aliases: drawColnames45
+> 
+> ### ** Examples
+> 
+> #Not to be called directly
+> 
+> 
+> 
+> cleanEx()
+> nameEx("embedCells")
+> ### * embedCells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: embedCells
+> ### Title: Generate cell-state embedding
+> ### Aliases: embedCells
+> 
+> ### ** Examples
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_lg <- embedCells(my_phemdObj_lg, cell_model='monocle2', data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> 
+> 
+> 
+> cleanEx()
+> nameEx("generateGDM")
+> ### * generateGDM
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: generateGDM
+> ### Title: Computes ground distance matrix based on cell embedding
+> ### Aliases: generateGDM
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("getArithmeticCentroids")
+> ### * getArithmeticCentroids
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: getArithmeticCentroids
+> ### Title: Get arithmetic centroids (coordinates)
+> ### Aliases: getArithmeticCentroids
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D cluster_centroids <- getArithmeticCentroids(ref_clusters)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("getCellYield")
+> ### * getCellYield
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: getCellYield
+> ### Title: Gets cell yield of each sample as a table
+> ### Aliases: getCellYield
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> getCellYield(my_phemdObj_final, cluster_assignments)
+   sample_ID cell_yield cluster_ID
+1      Mel59         12          C
+2      Mel71         30          B
+3      Mel82         47          D
+4      Mel65         55          D
+5      Mel81         61          D
+6      Mel67         95          D
+7      Mel53        124          A
+8      Mel84        137          D
+9      Mel58        141          B
+10     Mel74        147          B
+11     Mel72        181          A
+12     Mel60        213          D
+13     Mel88        217          D
+14     Mel75        340          B
+15     Mel80        344          D
+16     Mel94        346          A
+17     Mel89        370          D
+18     Mel79        393          B
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("getSampleCelltypeFreqs")
+> ### * getSampleCelltypeFreqs
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: getSampleCelltypeFreqs
+> ### Title: Returns cell subtype distribution for each sample as a table
+> ### Aliases: getSampleCelltypeFreqs
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> getSampleCelltypeFreqs(my_phemdObj_final, cluster_assignments)
+   Sample.Name   C-1   C-2   C-3   C-4   C-5   C-6 Sample.Cluster.ID
+1        Mel53 0.137 0.194 0.226 0.089 0.355 0.000                 A
+2        Mel58 0.106 0.064 0.560 0.078 0.184 0.007                 B
+3        Mel59 0.333 0.667 0.000 0.000 0.000 0.000                 C
+4        Mel60 0.512 0.094 0.272 0.019 0.099 0.005                 D
+5        Mel65 0.218 0.073 0.364 0.127 0.218 0.000                 D
+6        Mel67 0.326 0.021 0.337 0.095 0.211 0.011                 D
+7        Mel71 0.100 0.167 0.633 0.033 0.067 0.000                 B
+8        Mel72 0.337 0.066 0.177 0.144 0.265 0.011                 A
+9        Mel74 0.136 0.034 0.741 0.020 0.068 0.000                 B
+10       Mel75 0.009 0.015 0.912 0.018 0.047 0.000                 B
+11       Mel79 0.219 0.028 0.603 0.028 0.122 0.000                 B
+12       Mel80 0.163 0.169 0.387 0.035 0.244 0.003                 D
+13       Mel81 0.098 0.262 0.426 0.066 0.131 0.016                 D
+14       Mel82 0.213 0.255 0.319 0.043 0.149 0.021                 D
+15       Mel84 0.401 0.131 0.263 0.036 0.161 0.007                 D
+16       Mel88 0.295 0.198 0.253 0.060 0.189 0.005                 D
+17       Mel89 0.405 0.041 0.381 0.046 0.122 0.005                 D
+18       Mel94 0.327 0.173 0.040 0.084 0.353 0.023                 A
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("getSampleHistsByCluster")
+> ### * getSampleHistsByCluster
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: getSampleHistsByCluster
+> ### Title: Gets cell subtype frequency histograms for each sample by
+> ###   cluster ID
+> ### Aliases: getSampleHistsByCluster
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> weights_by_cluster <- getSampleHistsByCluster(my_phemdObj_final, cluster_assignments)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("getSampleSizes")
+> ### * getSampleSizes
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: getSampleSizes
+> ### Title: Retrieve single-cell sample sizes
+> ### Aliases: getSampleSizes
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D sample_sizes <- getSampleSizes(all_expn_data)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("groupSamples")
+> ### * groupSamples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: groupSamples
+> ### Title: Performs community detection on sample-sample distance matrix to
+> ###   identify groups of similar samples
+> ### Aliases: groupSamples
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, cell_model = 'monocle2', data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("identifyCentroids")
+> ### * identifyCentroids
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: identifyCentroids
+> ### Title: Identify cluster centroids (cell names)
+> ### Aliases: identifyCentroids
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D centroid_names <- identifyCentroids(ref_clusters)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("monocleInfo")
+> ### * monocleInfo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: monocleInfo
+> ### Title: Accessor function for stored Monocle object
+> ### Aliases: monocleInfo
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> monocle_obj <- monocleInfo(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("orderCellsMonocle")
+> ### * orderCellsMonocle
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: orderCellsMonocle
+> ### Title: Compute Monocle2 cell state and pseudotime assignments
+> ### Aliases: orderCellsMonocle
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, cell_model='monocle2', data_model='gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> 
+> 
+> 
+> cleanEx()
+> nameEx("phateInfo")
+> ### * phateInfo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: phateInfo
+> ### Title: Accessor function for stored phate object
+> ### Aliases: phateInfo
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> phateobj <- phateInfo(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plotCellYield")
+> ### * plotCellYield
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plotCellYield
+> ### Title: Plot cell yield of each sample as bar plot
+> ### Aliases: plotCellYield
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> plotCellYield(my_phemdObj_final, labels=cluster_assignments, font_sz = 0.8)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plotEmbeddings")
+> ### * plotEmbeddings
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plotEmbeddings
+> ### Title: Plots Monocle2 cell embedding plots
+> ### Aliases: plotEmbeddings
+> 
+> ### ** Examples
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model='gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> cmap <- plotEmbeddings(my_phemdObj_monocle)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plotGroupedSamplesDmap")
+> ### * plotGroupedSamplesDmap
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plotGroupedSamplesDmap
+> ### Title: Plot diffusion map embedding of samples based on distance matrix
+> ### Aliases: plotGroupedSamplesDmap
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> printClusterAssignments(cluster_assignments, my_phemdObj_final, '.', overwrite=TRUE)
+> dm <- plotGroupedSamplesDmap(my_EMD_mat, cluster_assignments, pt_sz=2)
+Warning: as(<dsCMatrix>, "dsTMatrix") is deprecated since Matrix 1.5-0; do as(., "TsparseMatrix") instead
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plotHeatmaps")
+> ### * plotHeatmaps
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plotHeatmaps
+> ### Title: Plot heatmap of cell subtypes
+> ### Aliases: plotHeatmaps
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_lg <- selectFeatures(my_phemdObj_lg, selected_genes)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff',
++ pseudo_expr=0, sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> myheatmap <- plotHeatmaps(my_phemdObj_monocle, cell_model='monocle2')
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("pooledCells")
+> ### * pooledCells
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: pooledCells
+> ### Title: Accessor function for aggregated cells used for cell subtype
+> ###   definition
+> ### Aliases: pooledCells
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> cells_aggregated <- pooledCells(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("printClusterAssignments")
+> ### * printClusterAssignments
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: printClusterAssignments
+> ### Title: Writes samples to file based on community detection group
+> ###   assignments
+> ### Aliases: printClusterAssignments
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_monocle <- embedCells(my_phemdObj_lg, data_model = 'gaussianff', sigma=0.02, maxIter=2)
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in class(cellData) != "matrix" && isSparseMatrix(cellData) == FALSE :
+  'length(x) = 2 > 1' in coercion to 'logical(1)'
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+Warning in newCellDataSet(mydata, phenoData = NULL, featureData = fd, expressionFamily = expression_fam_fn) :
+  Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions
+> my_phemdObj_monocle <- orderCellsMonocle(my_phemdObj_monocle)
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+Warning in graph.dfs(dp_mst, root = root_cell, neimode = "all", unreachable = FALSE,  :
+  Argument `neimode' is deprecated; use `mode' instead
+> my_phemdObj_final <- clusterIndividualSamples(my_phemdObj_monocle)
+[1] 0.23085339 0.10503282 0.39606127 0.06783370 0.18927790 0.01094092
+[1] 0.240893048 0.147283842 0.383060696 0.056650745 0.165757533 0.006354136
+> my_phemdObj_final <- generateGDM(my_phemdObj_final)
+> my_EMD_mat <- compareSamples(my_phemdObj_final)
+> cluster_assignments <- groupSamples(my_EMD_mat, distfun = 'hclust', ncluster=4)
+> printClusterAssignments(cluster_assignments, my_phemdObj_final, '.', overwrite=TRUE)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("rawExpn")
+> ### * rawExpn
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: rawExpn
+> ### Title: Accessor function for stored multi-sample raw expression data
+> ### Aliases: rawExpn
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> raw_expn_data <- rawExpn(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("removeTinySamples")
+> ### * removeTinySamples
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: removeTinySamples
+> ### Title: Remove samples with too few cells
+> ### Aliases: removeTinySamples
+> 
+> ### ** Examples
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10) #removes samples with fewer than 10 cells
+[1] "Mel78 removed because only contains 3 cells"
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("retrieveRefClusters")
+> ### * retrieveRefClusters
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: retrieveRefClusters
+> ### Title: Retrieve reference cell clusters
+> ### Aliases: retrieveRefClusters
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D cluster_expression_data <- retrieveRefClusters(my_phemdObj)
+> ## End(Not run)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("sNames")
+> ### * sNames
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: sNames
+> ### Title: Accessor function for identifiers of all single-cell samples in
+> ###   experiment
+> ### Aliases: sNames
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> sampleIDs <- sNames(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("selectFeatures")
+> ### * selectFeatures
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: selectFeatures
+> ### Title: Perform feature selection on aggregated data
+> ### Aliases: selectFeatures
+> 
+> ### ** Examples
+> 
+> 
+> my_phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> my_phemdObj_lg <- removeTinySamples(my_phemdObj, 10)
+[1] "Mel78 removed because only contains 3 cells"
+> my_phemdObj_lg <- aggregateSamples(my_phemdObj_lg, max_cells=1000)
+> my_phemdObj_lg <- selectFeatures(my_phemdObj_lg, selected_genes=c('TP53',
++ 'EGFR', 'KRAS', 'FOXP3', 'LAG3'))
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("selectMarkers")
+> ### * selectMarkers
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: selectMarkers
+> ### Title: Accessor function for gene/protein markers measured in
+> ###   experiment
+> ### Aliases: selectMarkers
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> genes <- selectMarkers(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("seuratInfo")
+> ### * seuratInfo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: seuratInfo
+> ### Title: Accessor function for stored Seurat object within Phemd object
+> ### Aliases: seuratInfo
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> seurat_obj <- seuratInfo(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("subsampledBool")
+> ### * subsampledBool
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: subsampledBool
+> ### Title: Accessor function for whether or not cells were subsampled when
+> ###   aggregated for cell subtype analysis
+> ### Aliases: subsampledBool
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> subsampled <- subsampledBool(phemdObj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("subsampledIdx")
+> ### * subsampledIdx
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: subsampledIdx
+> ### Title: Accessor function for aggregated cells used for cell subtype
+> ###   definition
+> ### Aliases: subsampledIdx
+> 
+> ### ** Examples
+> 
+> phemdObj <- createDataObj(all_expn_data, all_genes, as.character(snames_data))
+> subsampled_idx_list <- subsampledIdx(phemdObj)
+> 
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  63.473 1.528 66.207 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

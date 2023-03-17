@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Phenotypic EMD for comparison of single-cell samples</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Phenotypic EMD for comparison of single-cell samples
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;phemd&rsquo; version 1.15.1</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="aggregateSamples.html">aggregateSamples</a></td>
+<td>Aggregate expression data from all samples</td></tr>
+<tr><td style="width: 25%;"><a href="all_expn_data.html">all_expn_data</a></td>
+<td>Single-cell RNA-seq expression data for melanoma samples</td></tr>
+<tr><td style="width: 25%;"><a href="all_genes.html">all_genes</a></td>
+<td>All genes included in (subsampled) melanoma single-cell RNA-seq expression data</td></tr>
+<tr><td style="width: 25%;"><a href="assignCellClusterNearestNode.html">assignCellClusterNearestNode</a></td>
+<td>Assign cells to a reference cell subtype</td></tr>
+<tr><td style="width: 25%;"><a href="batchIDs.html">batchIDs</a></td>
+<td>Accessor function for batch ID for each sample</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">batchIDs&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">batchIDs&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="bindSeuratObj.html">bindSeuratObj</a></td>
+<td>Attach 'Seurat' object to 'Phemd' object</td></tr>
+<tr><td style="width: 25%;"><a href="celltypeFreqs.html">celltypeFreqs</a></td>
+<td>Accessor function for cell subtype distribution for each sample</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">celltypeFreqs&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">celltypeFreqs&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="clusterIndividualSamples.html">clusterIndividualSamples</a></td>
+<td>Computes cell subtype abundances for each sample</td></tr>
+<tr><td style="width: 25%;"><a href="compareSamples.html">compareSamples</a></td>
+<td>Computes EMD distance matrix representing pairwise dissimilarity between samples</td></tr>
+<tr><td style="width: 25%;"><a href="createDataObj.html">createDataObj</a></td>
+<td>Create 'Phemd' object</td></tr>
+<tr><td style="width: 25%;"><a href="drawColnames45.html">drawColnames45</a></td>
+<td>Rotates heatmap marker labels 45 degrees</td></tr>
+<tr><td style="width: 25%;"><a href="embedCells.html">embedCells</a></td>
+<td>Generate cell-state embedding</td></tr>
+<tr><td style="width: 25%;"><a href="gaussianffLocal.html">gaussianffLocal</a></td>
+<td>Models expression data using generalized linear model with Gaussian error</td></tr>
+<tr><td style="width: 25%;"><a href="GDM.html">GDM</a></td>
+<td>Accessor function for EMD ground distance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">GDM&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">GDM&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="generateGDM.html">generateGDM</a></td>
+<td>Computes ground distance matrix based on cell embedding</td></tr>
+<tr><td style="width: 25%;"><a href="getArithmeticCentroids.html">getArithmeticCentroids</a></td>
+<td>Get arithmetic centroids (coordinates)</td></tr>
+<tr><td style="width: 25%;"><a href="getCellYield.html">getCellYield</a></td>
+<td>Gets cell yield of each sample as a table</td></tr>
+<tr><td style="width: 25%;"><a href="getSampleCelltypeFreqs.html">getSampleCelltypeFreqs</a></td>
+<td>Returns cell subtype distribution for each sample as a table</td></tr>
+<tr><td style="width: 25%;"><a href="getSampleHistsByCluster.html">getSampleHistsByCluster</a></td>
+<td>Gets cell subtype frequency histograms for each sample by cluster ID</td></tr>
+<tr><td style="width: 25%;"><a href="getSampleSizes.html">getSampleSizes</a></td>
+<td>Retrieve single-cell sample sizes</td></tr>
+<tr><td style="width: 25%;"><a href="groupSamples.html">groupSamples</a></td>
+<td>Performs community detection on sample-sample distance matrix to identify groups of similar samples</td></tr>
+<tr><td style="width: 25%;"><a href="heatmap_genes.html">heatmap_genes</a></td>
+<td>Genes to be used when plotting heatmap for melanoma single-cell RNA-seq expression data</td></tr>
+<tr><td style="width: 25%;"><a href="identifyCentroids.html">identifyCentroids</a></td>
+<td>Identify cluster centroids (cell names)</td></tr>
+<tr><td style="width: 25%;"><a href="monocleInfo.html">monocleInfo</a></td>
+<td>Accessor function for stored Monocle object</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">monocleInfo&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">monocleInfo&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="orderCellsMonocle.html">orderCellsMonocle</a></td>
+<td>Compute Monocle2 cell state and pseudotime assignments</td></tr>
+<tr><td style="width: 25%;"><a href="phateInfo.html">phateInfo</a></td>
+<td>Accessor function for stored phate object</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">phateInfo&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">phateInfo&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd.html">Phemd</a></td>
+<td>Phemd class</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd.html">Phemd-class</a></td>
+<td>Phemd class</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">Phemd-method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">Phemd-methods</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="plotCellYield.html">plotCellYield</a></td>
+<td>Plot cell yield of each sample as bar plot</td></tr>
+<tr><td style="width: 25%;"><a href="plotEmbeddings.html">plotEmbeddings</a></td>
+<td>Plots Monocle2 cell embedding plots</td></tr>
+<tr><td style="width: 25%;"><a href="plotGroupedSamplesDmap.html">plotGroupedSamplesDmap</a></td>
+<td>Plot diffusion map embedding of samples based on distance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="plotHeatmaps.html">plotHeatmaps</a></td>
+<td>Plot heatmap of cell subtypes</td></tr>
+<tr><td style="width: 25%;"><a href="plotSummaryHistograms.html">plotSummaryHistograms</a></td>
+<td>Plots cell subtype frequency histograms summarizing each group of samples</td></tr>
+<tr><td style="width: 25%;"><a href="pooledCells.html">pooledCells</a></td>
+<td>Accessor function for aggregated cells used for cell subtype definition</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">pooledCells&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">pooledCells&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="printClusterAssignments.html">printClusterAssignments</a></td>
+<td>Writes samples to file based on community detection group assignments</td></tr>
+<tr><td style="width: 25%;"><a href="rawExpn.html">rawExpn</a></td>
+<td>Accessor function for stored multi-sample raw expression data</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">rawExpn&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">rawExpn&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="removeTinySamples.html">removeTinySamples</a></td>
+<td>Remove samples with too few cells</td></tr>
+<tr><td style="width: 25%;"><a href="retrieveRefClusters.html">retrieveRefClusters</a></td>
+<td>Retrieve reference cell clusters</td></tr>
+<tr><td style="width: 25%;"><a href="selected_genes.html">selected_genes</a></td>
+<td>Genes to be used when performing clustering and trajectory analyses on melanoma single-cell RNA-seq expression data</td></tr>
+<tr><td style="width: 25%;"><a href="selectFeatures.html">selectFeatures</a></td>
+<td>Perform feature selection on aggregated data</td></tr>
+<tr><td style="width: 25%;"><a href="selectMarkers.html">selectMarkers</a></td>
+<td>Accessor function for gene/protein markers measured in experiment</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">selectMarkers&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">selectMarkers&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="seuratInfo.html">seuratInfo</a></td>
+<td>Accessor function for stored Seurat object within Phemd object</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">seuratInfo&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">seuratInfo&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="sNames.html">sNames</a></td>
+<td>Accessor function for identifiers of all single-cell samples in experiment</td></tr>
+<tr><td style="width: 25%;"><a href="snames_data.html">snames_data</a></td>
+<td>Sample names for melanoma single-cell RNA-seq expression data</td></tr>
+<tr><td style="width: 25%;"><a href="subsampledBool.html">subsampledBool</a></td>
+<td>Accessor function for whether or not cells were subsampled when aggregated for cell subtype analysis</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">subsampledBool&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">subsampledBool&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="subsampledIdx.html">subsampledIdx</a></td>
+<td>Accessor function for aggregated cells used for cell subtype definition</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">subsampledIdx&lt;-</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+<tr><td style="width: 25%;"><a href="Phemd-methods.html">subsampledIdx&lt;--method</a></td>
+<td>Setter function for protein / gene markers</td></tr>
+</table>
+</div></body></html>

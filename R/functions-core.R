@@ -440,8 +440,7 @@ newCellDataSetUpdated <- function (cellData, phenoData = NULL, featureData = NUL
     if (!("gene_short_name" %in% colnames(featureData))) {
         warning("Warning: featureData must contain a column verbatim named 'gene_short_name' for certain functions")
     }
-    if (!inherits(cellData, "matrix") && any(isSparseMatrix(cellData) == 
-        FALSE) {
+    if (!inherits(cellData, "matrix") && any(isSparseMatrix(cellData) == FALSE)) {
         stop("Error: argument cellData must be a matrix (either sparse from the Matrix package or dense)")
     }
     if (!("gene_short_name" %in% colnames(featureData))) {

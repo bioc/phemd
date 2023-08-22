@@ -42,7 +42,7 @@ Config/reticulate:
       list(package = "phate")
     )
   )
-Suggests: knitr
+Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
 biocViews: 
   Clustering, 

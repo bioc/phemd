@@ -1,15 +1,14 @@
 Package: phemd
 Type: Package
 Title: Phenotypic EMD for comparison of single-cell samples
-Version: 1.15.2
-Author: William S Chen
-Maintainer: William S Chen <wil.yum.chen@gmail.com>
+Version: 1.17.0
+Authors@R: person("William S", "Chen", email="wil.yum.chen@gmail.com",role=c("aut","cre"))
 Description: Package for comparing and generating a low-dimensional embedding
   of multiple single-cell samples.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5), monocle, Seurat
+Depends: R (>= 4.0), monocle, Seurat
 Imports: 
   SingleCellExperiment, 
   RColorBrewer, 
@@ -43,7 +42,7 @@ Config/reticulate:
       list(package = "phate")
     )
   )
-Suggests: knitr
+Suggests: knitr, BiocStyle
 VignetteBuilder: knitr
 biocViews: 
   Clustering, 
@@ -57,4 +56,3 @@ biocViews:
   Visualization, 
   MultipleComparison
 RoxygenNote: 7.0.2
-PackageStatus: Deprecated
